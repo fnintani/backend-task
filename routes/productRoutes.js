@@ -17,6 +17,7 @@ productRouter.get(
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
     const category = query.category || "";
+    const tag = query.tag || "";
     const price = query.price || "";
     const rating = query.rating || "";
     const order = query.order || "";
@@ -32,6 +33,7 @@ productRouter.get(
           }
         : {};
     const categoryFilter = category && category !== "all" ? { category } : {};
+    const tagFilter = tag && tag !== "all" ? { tag } : {};
     const ratingFilter =
       rating && rating !== "all"
         ? {
@@ -66,6 +68,7 @@ productRouter.get(
     const products = await Product.find({
       ...queryFilter,
       ...categoryFilter,
+      ...tagFilter,
       ...priceFilter,
       ...ratingFilter,
     })
@@ -76,6 +79,7 @@ productRouter.get(
     const countProducts = await Product.countDocuments({
       ...queryFilter,
       ...categoryFilter,
+      ...tagFilter,
       ...priceFilter,
       ...ratingFilter,
     });
@@ -93,6 +97,14 @@ productRouter.get(
   expressAsyncHandler(async (req, res) => {
     const categories = await Product.find().distinct("category");
     res.send(categories);
+  })
+);
+
+productRouter.get(
+  "/tag",
+  expressAsyncHandler(async (req, res) => {
+    const tag = await Product.find().distinct("tag");
+    res.send(tag);
   })
 );
 
